@@ -11,7 +11,9 @@ def next_forward(observation: int, prev_forward: np.array) -> np.array:
     Returns:
         np.array: next state probability distribution
     """
-    f_next = np.matmul(Observation_Map[observation],np.matmul(Transformation_Matrix.T,prev_forward))
+    O = Observation_Matrix_Map[observation]
+    Transf_T = Transformation_Matrix.T
+    f_next = np.matmul(O, np.matmul(Transf_T, prev_forward))
     return f_next/np.sum(f_next)
 
 def filter(observations: list[int]) -> np.array:
@@ -24,7 +26,7 @@ def filter(observations: list[int]) -> np.array:
         np.array: resulting state probability distribution
     """
     current = Initial_P
-    for i in range(1, len(observations)):
-        prev_observation = observations[i-1]
+    for observation in observations:
+        current =  next_forward(observation=observation, prev_forward=current)
 
     return current

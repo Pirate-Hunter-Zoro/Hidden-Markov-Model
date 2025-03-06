@@ -32,4 +32,4 @@ O_R_NS = O_Red_Eyes * O_No_Sleep_In_Class
 O_NR_S = O_No_Red_Eyes * O_Sleep_In_Class
 O_NR_NS = O_No_Red_Eyes * O_No_Sleep_In_Class
 # For convenient calculations, we will store these in a map
-Observation_Map = {0: O_R_S, 1: O_R_NS, 2: O_NR_S, 3: O_NR_NS}
+Observation_Matrix_Map = {0: O_R_S, 1: O_R_NS, 2: O_NR_S, 3: O_NR_NS}
