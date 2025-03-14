@@ -16,8 +16,6 @@ def generate_probabilities(particles: np.array, env: le.Environment) -> tuple[np
     """
     moved_particles = np.zeros_like(particles)
     observation_table = env.create_observation_tables()
-    locations_table = env.create_locations_table()
-    headings_table = env.create_headings_table()
     
     # This tells us what the robot currently sees in terms of walls to the north, south, east, and west
     walls = env.observe()
@@ -53,9 +51,8 @@ def generate_probabilities(particles: np.array, env: le.Environment) -> tuple[np
         particle[2] = new_direction
         moved_particles[i] = particle
 
-        # Now we need to find the probability of the robot seeing the walls that it sees should we be in this particle's location
-        prob = 1
-        weights[i] = prob
+        # Now we need to find the probability of the robot seeing the walls that it sees given we are in this particle's location
+        # TODO - modify this probability calculation
         observations = [
                     0
                     if env.traversable(
@@ -65,7 +62,8 @@ def generate_probabilities(particles: np.array, env: le.Environment) -> tuple[np
                     for direction in le.Directions
                     if direction != le.Directions.St
                 ]
-        weights[i] = observation_table[particle[0]][particle[1]][(o for o in observations)]
+        # We know which directions we can see walls in, so we can use this to get the probability of the robot seeing these walls at this location
+        weights[i] = observation_table[particle[0]][particle[1]][tuple(observations)]
     
     # Normalize the weights
     weights = weights / np.sum(weights)
@@ -73,16 +71,6 @@ def generate_probabilities(particles: np.array, env: le.Environment) -> tuple[np
     # Now we need to sample particles based on their weights
     indices = np.random.choice(len(particles), len(particles), p=weights)
     new_particles = np.array([moved_particles[i] for i in indices])
-
-    # prob_map = list()
-    # for i in env.map:
-    #     a = list()
-    #     for j in i:
-    #         if j != 1:
-    #             a.append(random.uniform(0, 1))
-    #         else:
-    #             a.append(0)
-    #     prob_map.append(a)
 
     prob_map = list()
     for i in env.map:

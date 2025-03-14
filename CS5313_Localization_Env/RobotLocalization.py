@@ -23,6 +23,8 @@ import pygame
 import random
 import numpy as np
 
+num_particles = 10000
+
 class Game:
     def init_pygame(self, window_size):
         pygame.init()
@@ -30,7 +32,7 @@ class Game:
         self.window_size = window_size
         self.screen = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
-        self.particles = np.zeros((10000, 2, 1))
+        self.particles_initialized = False
         return self.screen, self.clock
 
     def update(
@@ -46,12 +48,13 @@ class Game:
                 if env_map[i][j] == 1:
                     color = (0, 0, 0)
                 elif i == most_prob[0] and j == most_prob[1]:
-                    color = (218, 165, 32)
+                    color = (0, 255, 0) # Green for most probable
                 else:
+                    # Lower probability means more red and less green
                     color = (
                         (1 - prob_map[i][j]) * 255,
-                        (1 - prob_map[i][j]*.2) * 255,
-                        (1 - prob_map[i][j]*.2) * 255,
+                        prob_map[i][j] * 255,
+                        0,
                     )
                 pygame.draw.rect(
                     self.screen, color, [i * x_dir, j * y_dir, x_dir, y_dir]
@@ -146,8 +149,13 @@ class Game:
         pygame.display.flip()
         return True
 
-    def generate_possibilities(self, env):
+    def generate_possibilities(self, env: le.Environment):
         # Call to my OWN implementation to generate probabilities
+        if not self.particles_initialized:
+            open_positions = [(i, j, int(random.random()*len(le.Headings))) for i in range(len(env.map)) for j in range(len(env.map)) if env.map[i][j] != 1]
+            particle_indices = np.random.choice(np.array([i for i in range(len(open_positions))]), size=num_particles, replace=True)
+            self.particles = np.array([open_positions[i] for i in particle_indices])
+            self.particles_initialized = True
         self.particles, probabilities = generate_probabilities(self.particles, env)
         return probabilities
 
