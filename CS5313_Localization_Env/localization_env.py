@@ -151,7 +151,7 @@ class Environment:
         # Step counter
         self.steps = 0
 
-        # save the bias, noise, and map sizze parameters
+        # save the bias, noise, and map size parameters
         self.action_bias = action_bias
         self.observation_noise = observation_noise
         self.action_noise = action_noise

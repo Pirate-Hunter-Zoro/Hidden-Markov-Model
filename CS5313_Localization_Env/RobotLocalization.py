@@ -43,17 +43,16 @@ class Game:
         self.screen.fill((0, 0, 0))
         a = np.argmax(prob_map)
         most_prob = [a // len(prob_map[0]), a % len(prob_map[0])]
+        most_prob_value = prob_map[most_prob[0]][most_prob[1]]
         for i in range(len(env_map)):
             for j in range(len(env_map[i])):
                 if env_map[i][j] == 1:
                     color = (0, 0, 0)
-                elif i == most_prob[0] and j == most_prob[1]:
-                    color = (0, 255, 0) # Green for most probable
                 else:
-                    # Lower probability means more red and less green
+                    # The farther away we are from the most probable, the more red we are
                     color = (
-                        (1 - prob_map[i][j]) * 255,
-                        prob_map[i][j] * 255,
+                        min(100*(most_prob_value - prob_map[i][j]) * 255,255),
+                        255,
                         0,
                     )
                 pygame.draw.rect(
@@ -152,9 +151,9 @@ class Game:
     def generate_possibilities(self, env: le.Environment):
         # Call to my OWN implementation to generate probabilities
         if not self.particles_initialized:
-            open_positions = [(i, j, int(random.random()*len(le.Headings))) for i in range(len(env.map)) for j in range(len(env.map)) if env.map[i][j] != 1]
+            open_positions = [(i, j) for i in range(len(env.map)) for j in range(len(env.map)) if env.map[i][j] != 1]
             particle_indices = np.random.choice(np.array([i for i in range(len(open_positions))]), size=num_particles, replace=True)
-            self.particles = np.array([open_positions[i] for i in particle_indices])
+            self.particles = [[open_positions[i][0], open_positions[i][1], random.choice(list(le.Headings))] for i in particle_indices]
             self.particles_initialized = True
         self.particles, probabilities = generate_probabilities(self.particles, env)
         return probabilities
@@ -176,7 +175,7 @@ def main():
     speed = 10  # The higher, the lower
     random.seed(seed)
     window_size = [750, 750]
-    env = le.Environment(0.1, 0.1, 0.1, (10, 10), seed=seed)
+    env = le.Environment(0.1, 0.1, 0.1, (20, 20), seed=seed)
     game = Game()
     _, clock = game.init_pygame(window_size)
     done = False
