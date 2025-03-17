@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 # Initial state probabilitys
@@ -35,7 +36,11 @@ O_NR_S = O_No_Red_Eyes * O_Sleep_In_Class
 O_NR_NS = O_No_Red_Eyes * O_No_Sleep_In_Class
 # For convenient calculations, we will store these in a map
 Observation_Matrix_Map = {0: O_R_S, 1: O_R_NS, 2: O_NR_S, 3: O_NR_NS}
-Observation_String_Map = {0: "Red Eyes, Sleep in Class", 
+Observation_String_Map = {-1: "No Evidence",
+                          0: "Red Eyes, Sleep in Class", 
                           1: "Red Eyes, No Sleep in Class", 
                           2: "No Red Eyes, Sleep in Class", 
                           3: "No Red Eyes, No Sleep in Class"}
+
+# Let us initialize a sequence of states for testing
+observations = [int(4*random.random()) for _ in range(25)]

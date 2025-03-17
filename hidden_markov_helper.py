@@ -1,6 +1,7 @@
 import math
 import numpy as np
 from constants import *
+import matplotlib.pyplot as plt
 
 ######################################################################################################################################################################################################
 
@@ -165,3 +166,63 @@ def viterbi(evidence: list[int]) -> list[bool]:
         posn = (i-1, prev_boolean)
     
     return most_likely
+
+######################################################################################################################################################################################################
+
+# Graphing Helper
+def graph_probabilities(observations: list[int], probabilities: list[np.array], title: str) -> None:
+    """Graph the probability distributions of the hidden states over time
+
+    Args:
+        probabilities (list[np.array]): list of probability distributions for the hidden states
+        title (str): title of the graph
+        ylabel (str): label for the y-axis
+    """
+    observations = [-1] + observations
+    _, ax = plt.subplots()
+    # Map each observation to the indices where it occurs
+    obs_map = {}
+    for i, obs in enumerate(observations):
+        if obs not in obs_map:
+            obs_map[obs] = []
+        obs_map[obs].append(i)
+    for obs, indices in obs_map.items():
+        x = indices
+        y = [probabilities[i][0][0] for i in indices]
+        label = Observation_String_Map[obs]
+        ax.scatter(x, y, label=label)
+
+    ax.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Probability of Having Slept Enough")
+    plt.show()
+
+# Viterbi Graphing Helper
+def graph_viterbi(evidence: list[int], state_sequence: list[bool], title: str) -> None:
+    """Graph the Viterbi state sequence
+
+    Args:
+        evidence (list[int]): list of evidence occurrences
+        state_sequence (list[bool]): resulting sequence of state values
+        title (str): title of the graph
+    """
+    _, ax = plt.subplots()
+    # Map each observation to the indices where it occurs
+    obs_map = {}
+    evidence = [-1] + evidence
+    for i, obs in enumerate(evidence):
+        if obs not in obs_map:
+            obs_map[obs] = []
+        obs_map[obs].append(i)
+    for obs, indices in obs_map.items():
+        x = indices
+        y = [state_sequence[i] for i in indices]
+        label = Observation_String_Map[obs]
+        ax.scatter(x, y, label=label)
+
+    ax.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("State")
+    plt.show()
