@@ -43,11 +43,11 @@ def generate_probabilities(particles: list[list], env: le.Environment) -> tuple[
 
         # We have the direction we tried to go in, and the direction we went in.
         # What are the odds the robot would have followed suit from its location?
-        headings_dict = headings_table[env.robot_location[0]][env.robot_location[1]]
-        if particle_heading not in headings_dict.keys() or new_particle_heading not in headings_dict[particle_heading].keys():
+        headings_dict = headings_table[new_particle_location[0]][new_particle_location[1]]
+        if env.robot_heading not in headings_dict.keys() or new_particle_heading not in headings_dict[env.robot_heading].keys():
             weights[i] = 0
         else:
-            weights[i] = headings_dict[particle_heading][new_particle_heading]
+            weights[i] = headings_dict[env.robot_heading][new_particle_heading]
     
     # Normalize the weights
     weights = weights / np.sum(weights)
