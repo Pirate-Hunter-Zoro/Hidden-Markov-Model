@@ -100,7 +100,7 @@ def fixed_lag_smoothing(observations: list[int], offset: int) -> list[np.array]:
         list[np.array]: probability distribution for all states
     """
     probability_distributions = []
-    for i in range(len(observations)):
+    for i in range(-1,len(observations)):
         look_ahead_posn = min(i+offset, len(observations)-1)
         f = filter(observations[:look_ahead_posn+1])
         b = np.ones(shape=(2,1))
