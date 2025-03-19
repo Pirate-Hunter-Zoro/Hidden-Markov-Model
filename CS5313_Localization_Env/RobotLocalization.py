@@ -33,6 +33,7 @@ class Game:
         self.screen = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
         self.particles_initialized = False
+        self.report = ""
         return self.screen, self.clock
 
     def update(
@@ -44,6 +45,8 @@ class Game:
         a = np.argmax(prob_map)
         most_prob = [a // len(prob_map[0]), a % len(prob_map[0])]
         most_prob_value = prob_map[most_prob[0]][most_prob[1]]
+        most_prob_posns = [(i,j) for i in range(len(prob_map)) for j in range(len(prob_map[0])) if prob_map[i][j] == most_prob_value]
+        self.report += "Most Probable Position(s): " + str(most_prob_posns) + f"; Probability: {most_prob_value}" + "; Robot Position: " + str((robot_loc)) + "\n"
         for i in range(len(env_map)):
             for j in range(len(env_map[i])):
                 if env_map[i][j] == 1:
@@ -196,6 +199,8 @@ def main():
             )
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                with open("robot_location_report.txt", "w") as file:
+                    file.write(game.report)
                 done = True
         clock.tick(6)
         pygame.display.flip()

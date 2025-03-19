@@ -42,5 +42,6 @@ Observation_String_Map = {-1: "No Evidence",
                           2: "No Red Eyes, Sleep in Class", 
                           3: "No Red Eyes, No Sleep in Class"}
 
-# Let us initialize a sequence of states for testing
-observations = [int(4*random.random()) for _ in range(25)]
+# Let create a function to generate random observations
+def create_observations(n: int):
+    return [int(4*random.random()) for _ in range(n)]

@@ -66,10 +66,8 @@ def generate_probabilities(particles: list[list], env: le.Environment) -> tuple[
         particle = particles[i]
         prob_map[particle[0]][particle[1]] += 1
     
-    prob_sum = 0
     for i in range(len(prob_map)):
         for j in range(len(prob_map[i])):
             prob_map[i][j] = prob_map[i][j] / len(particles)
-            prob_sum += prob_map[i][j]
 
     return particles, prob_map
